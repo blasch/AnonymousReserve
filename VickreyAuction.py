@@ -6,19 +6,19 @@ class VickreyAuction:
 		self.bidders = bidders
 		self.anonymousReserve = 0
 	
-	def setAnonymousReserve(r):
+	def setAnonymousReserve(self, r):
 		self.anonymousReserve = r
 	
-	def clearBidders():
+	def clearBidders(self):
 		self.bidders = []
 		
-	def addBidder(bidder):
+	def addBidder(self, bidder):
 		self.bidders.append(bidder)
 	
-	def removeBidder(index):
+	def removeBidder(self, index):
 		self.bidders.remove(index)
 		
-	def runAuction():
+	def runAuction(self):
 		possiblePrices = [self.anonymousReserve]
 		for i in xrange(self.bidders):
 			if(self.bidders[i].value > self.anonymousReserve):

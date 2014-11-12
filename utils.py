@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import VickreyAuction.*
 
 def saveDataToFile(filename, data):
 	np.save(filename, data)
@@ -31,6 +32,18 @@ def findMaxReserve(x_reserves, y_revenue):
 	for m in max_indices:
 		reserves.append(x_reserves[m])
 	return (reserves, max_revenue)
+	
+def runExperiment(auction):
+	reserves = range(0,100)
+	normReserves = [x / 100 for x in reserves]
+	x_reserve = []
+	y_revenue = []
+	for r in normReserves:
+		auction.setAnonymousReserve(r)
+		profit = auction.runAuction()
+		x_reserve.append(r)
+		y_revenue.append(profit)
+	return (x_reserve, y_revenue)
 	
 #def getRegularDistributions():
 	
