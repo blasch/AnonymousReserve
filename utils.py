@@ -31,3 +31,6 @@ def findMaxReserve(x_reserves, y_revenue):
 	for m in max_indices:
 		reserves.append(x_reserves[m])
 	return (reserves, max_revenue)
+	
+#def getRegularDistributions():
+	
