@@ -36,7 +36,6 @@ def findMaxReserve(x_reserves, y_revenue):
 def runExperiment(auction):
 	reserves = range(0,100)
 	normReserves = [x / 100. for x in reserves]
-	print normReserves
 	x_reserve = []
 	y_revenue = []
 	for r in normReserves:
@@ -47,7 +46,7 @@ def runExperiment(auction):
 	return (x_reserve, y_revenue)
 	
 def getRegularDistributions():
-	normal = np.random.normal(0.5, 1, 1000)
+	normal = np.random.normal(0.5, 0.5, 1000)
 	exp = np.random.exponential(1, 1000)
 	uni = np.random.uniform(0,1,1000)
 	stud_t = np.random.standard_t(1, 1000)
@@ -55,8 +54,12 @@ def getRegularDistributions():
 
 dis = getRegularDistributions()
 bid1 = Bidder(dis[0])
-bid2 = Bidder(dis[1])
+print bid1.value
+bid2 = Bidder(dis[2])
+print bid2.value
 auction = VickreyAuction([bid1,bid2])
 (x,y) = runExperiment(auction)
-print x
+(mx, my) = findMaxReserve(x,y)
+print mx
+print my
 	
