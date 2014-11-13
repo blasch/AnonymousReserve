@@ -20,16 +20,15 @@ class VickreyAuction:
 		
 	def runAuction(self):
 		possiblePrices = [self.anonymousReserve]
-		for i in xrange(self.bidders):
+		for i in xrange(len(self.bidders)):
 			if(self.bidders[i].value > self.anonymousReserve):
 				possiblePrices.append(self.bidders[i].value)
 		#Price = second highest
 		possiblePrices.remove(max(possiblePrices))
 		if(len(possiblePrices) == 0):
 			return 0
-		return possiblePrices[max(possiblePrices)]
-		
-		
+		return possiblePrices[int(max(possiblePrices))]
+			
 class Bidder:
 
 	def __init__(self, distribution):
