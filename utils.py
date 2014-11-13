@@ -45,5 +45,10 @@ def runExperiment(auction):
 		y_revenue.append(profit)
 	return (x_reserve, y_revenue)
 	
-#def getRegularDistributions():
+def getRegularDistributions():
+	normal = np.random.normal(0.5, 1, 1000)
+	exp = np.random.exponential(1, 1000)
+	uni = np.random.uniform(0,1,1000)
+	stud_t = np.random.standard_t(1, 1000)
+	return [normal, exp, uni, stud_t]
 	
