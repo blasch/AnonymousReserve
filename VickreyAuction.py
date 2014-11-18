@@ -24,7 +24,6 @@ class VickreyAuction:
 			if(self.bidders[i].value > self.anonymousReserve):
 				possiblePrices.append(self.bidders[i].value)
 		#Price = second highest
-		#note: what happens if two people have the same bid
 		possiblePrices.remove(max(possiblePrices))
 		if(len(possiblePrices) == 0):
 			return 0
@@ -39,17 +38,14 @@ class VickreyAuction:
 				#in order to keep indices of bidders
 				possiblePrices.append(-1)
 			winningBid = max(possiblePrices)
+			#nobody bid above the reserve
 			if (winningBid == -1):
 				return 0
+			#there was a bid above the reserve
 			else:
-				indicesOfMaxBidAboveReserve = [i for i, j in enumerate(possiblePrices) if j == winningBid]
-				#single max bid above bidder specific reserves
-				if (len(indicesOfMaxBidAboveReserve) == 1):
-					winningBidderIndex = possiblePrices.pop(indicesOfMaxBidAboveReserve[0])
-					return max(self.bidders[winningBidderIndex].optimalReserve, max (possiblePrices))
-				#multiple bids of same amount above bidder specific reserves
-				else:
-					return winningBid
+				winningBidderIndex = possiblePrices.remove(winningBid)
+				return max(self.bidders[winningBidderIndex].optimalReserve, max (possiblePrices))
+
 		
 class Bidder:
 
