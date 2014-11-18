@@ -27,7 +27,7 @@ class VickreyAuction:
 		possiblePrices.remove(max(possiblePrices))
 		if(len(possiblePrices) == 0):
 			return 0
-		return possiblePrices[max(possiblePrices)]
+		return possiblePrices[int(max(possiblePrices))]
 
 	def runOptimalAuction(self):
 		possiblePrices = []
@@ -52,11 +52,11 @@ class Bidder:
 		self.distribution = distribution
 		self.value = np.mean(distribution)
 		#need to figure out how to compute min and max
-		self.optimalReserve = self.getOptimalReserves(0, 100, distribution)
+		#self.optimalReserve = self.getOptimalReserves(0, 100, distribution)
 
-	def getOptimalReserves(min, max, distribution):
+	def getOptimalReserves(self, min, max, distribution):
 		distributionRange = range(min, max)
-		possibleReserves = [x / 100 for x in distributionRange]
+		possibleReserves = [x / 100. for x in distributionRange]
 		singleBidderRevenue = []
 		for r in possibleReserves:
 			singleBidderRevenue.append(r * (1 - distribution.cdf(r)))
