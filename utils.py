@@ -41,6 +41,7 @@ def runExperiment(auction):
 	for r in normReserves:
 		auction.setAnonymousReserve(r)
 		profit = auction.runAuction()
+		#print profit
 		x_reserve.append(r)
 		y_revenue.append(profit)
 	return (x_reserve, y_revenue)
@@ -53,10 +54,8 @@ def getRegularDistributions():
 	return [normal, exp, uni, stud_t]
 
 dis = getRegularDistributions()
-bid1 = Bidder(dis[0])
-print bid1.value
+bid1 = Bidder(dis[2])
 bid2 = Bidder(dis[2])
-print bid2.value
 auction = VickreyAuction([bid1,bid2])
 (x,y) = runExperiment(auction)
 (mx, my) = findMaxReserve(x,y)

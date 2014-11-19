@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 class VickreyAuction:
 
@@ -21,10 +22,13 @@ class VickreyAuction:
 	def runAuction(self):
 		possiblePrices = [self.anonymousReserve]
 		for i in xrange(len(self.bidders)):
-			if(self.bidders[i].value > self.anonymousReserve):
-				possiblePrices.append(self.bidders[i].value)
+			bid = self.bidders[i].getValue()
+			if(bid > self.anonymousReserve):
+				possiblePrices.append(bid)
 		#Price = second highest
+		print "possible" + str(possiblePrices)
 		possiblePrices.remove(max(possiblePrices))
+		#print possiblePrices
 		if(len(possiblePrices) == 0):
 			return 0
 		return possiblePrices[int(max(possiblePrices))]
@@ -33,5 +37,10 @@ class Bidder:
 
 	def __init__(self, distribution):
 		self.distribution = distribution
-		self.value = np.mean(distribution)
+		self.lastValue = 0
+
+	def getValue(self):
+		bid = random.choice(self.distribution)
+		self.lastValue = bid
+		return bid
 		
