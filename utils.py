@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import uniform
 #import matplotlib.pyplot as plt
 from VickreyAuction import VickreyAuction, Bidder
 
@@ -46,20 +47,15 @@ def runExperiment(auction):
 	return (x_reserve, y_revenue)
 	
 def getRegularDistributions():
-	normal = np.random.normal(0.5, 0.5, 1000)
-	exp = np.random.exponential(1, 1000)
-	uni = np.random.uniform(0,1,1000)
-	stud_t = np.random.standard_t(1, 1000)
-	return [normal, exp, uni, stud_t]
+	uni = uniform()
+	uni2 = uniform(loc=0.5, scale = 0.5)
+	return [uni, uni2]
 
 dis = getRegularDistributions()
 bid1 = Bidder(dis[0])
-print bid1.value
-bid2 = Bidder(dis[2])
-print bid2.value
-auction = VickreyAuction([bid1,bid2])
-(x,y) = runExperiment(auction)
-(mx, my) = findMaxReserve(x,y)
-print mx
-print my
+bid2 = Bidder(dis[1])
+auction = VickreyAuction([bid1, bid2])
+revenue = auction.runOptimalAuction()
+print "optimal revenue"
+print revenue
 	
