@@ -23,7 +23,7 @@ class VickreyAuction:
 			possiblePrices = [self.anonymousReserve]
 			for i in xrange(len(self.bidders)):
 				bid = self.bidders[i].randomSamples[j]
-				if(bid > self.anonymousReserve):
+				if(bid >= self.anonymousReserve):
 					possiblePrices.append(bid)
 			#Price = second highest
 			possiblePrices.remove(max(possiblePrices))
@@ -31,7 +31,7 @@ class VickreyAuction:
 			if (len(possiblePrices) == 0):
 				singleAuctionRevenues.append(0)
 			else:
-				singleAuctionRevenues.append(possiblePrices[int(max(possiblePrices))])
+				singleAuctionRevenues.append((max(possiblePrices)))
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
 	def runXOptimalAuctions(self):

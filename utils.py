@@ -41,18 +41,17 @@ def runExperiment(auction):
 	for r in normReserves:
 		auction.setAnonymousReserve(r)
 		profit = auction.runXAuctions()
-		#print profit
 		x_reserve.append(r)
 		y_revenue.append(profit)
 	return (x_reserve, y_revenue)
 
 def getRegularDistributions():
 	uni = uniform()
-	uni2 = uniform(loc=0.5, scale = 0.5)
+	uni2 = uniform()
 	return [uni, uni2]
 
 dis = getRegularDistributions()
-numSamples = 1000
+numSamples = 10000
 bid1 = Bidder(dis[0], numSamples)
 bid2 = Bidder(dis[1], numSamples)
 auction = VickreyAuction([bid1, bid2], numSamples)
