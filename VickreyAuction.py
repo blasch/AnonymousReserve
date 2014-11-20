@@ -1,10 +1,9 @@
-import numpy as np
-
 class VickreyAuction:
 
-	def __init__(self, bidders):
+	def __init__(self, bidders, numSamples):
 		self.bidders = bidders
 		self.anonymousReserve = 0
+		self.numSamples = numSamples
 	
 	def setAnonymousReserve(self, r):
 		self.anonymousReserve = r
@@ -17,46 +16,54 @@ class VickreyAuction:
 	
 	def removeBidder(self, index):
 		self.bidders.remove(index)
-		
-	def runAuction(self):
-		possiblePrices = [self.anonymousReserve]
-		for i in xrange(len(self.bidders)):
-			if(self.bidders[i].value > self.anonymousReserve):
-				possiblePrices.append(self.bidders[i].value)
-		#Price = second highest
-		possiblePrices.remove(max(possiblePrices))
-		if(len(possiblePrices) == 0):
-			return 0
-		return possiblePrices[int(max(possiblePrices))]
-
-	def runOptimalAuction(self):
-		possiblePrices = []
-		for i in xrange(len(self.bidders)):
-			randomSample = self.bidders[i].distribution.rvs()
-			if ( randomSample >= self.bidders[i].optimalReserve):
-				possiblePrices.append(randomSample)
+	
+	def runXAuctions(self):
+		singleAuctionRevenues = []
+		for j in range(0, self.numSamples):
+			possiblePrices = [self.anonymousReserve]
+			for i in xrange(len(self.bidders)):
+				bid = self.bidders[i].randomSamples[j]
+				if(bid > self.anonymousReserve):
+					possiblePrices.append(bid)
+			#Price = second highest
+			possiblePrices.remove(max(possiblePrices))
+			#print possiblePrices
+			if (len(possiblePrices) == 0):
+				singleAuctionRevenues.append(0)
 			else:
-				#in order to keep indices of bidders
-				possiblePrices.append(-1)
-		winningBid = max(possiblePrices)
-		#nobody bid above the reserve
-		print possiblePrices
-		if (winningBid == -1):
-			return 0
-		#there was a bid above the reserve
-		else:
-			indicesOfMaxBidAboveReserve = [i for i, j in enumerate(possiblePrices) if j == winningBid]
-			possiblePrices.remove(winningBid)
-			return max(self.bidders[indicesOfMaxBidAboveReserve[0]].optimalReserve, max (possiblePrices))
+				singleAuctionRevenues.append(possiblePrices[int(max(possiblePrices))])
+		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
+
+	def runXOptimalAuctions(self):
+		singleAuctionRevenues = []
+		for j in range(0, self.numSamples):
+			possiblePrices = []
+			for i in xrange(len(self.bidders)):
+				bid = self.bidders[i].randomSamples[j]
+				if ( bid >= self.bidders[i].optimalReserve):
+					possiblePrices.append(bid)
+				else:
+					#in order to keep indices of bidders
+					possiblePrices.append(-1)
+			winningBid = max(possiblePrices)
+			#nobody bid above the reserve
+			if (winningBid == -1):
+				singleAuctionRevenues.append(0)
+			#there was a bid above the reserve
+			else:
+				indicesOfMaxBidAboveReserve = [i for i, k in enumerate(possiblePrices) if k == winningBid]
+				possiblePrices.remove(winningBid)
+				singleAuctionRevenues.append(max(self.bidders[indicesOfMaxBidAboveReserve[0]].optimalReserve, max (possiblePrices)))
+		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
 class Bidder:
 
-	def __init__(self, distribution):
+	def __init__(self, distribution, numSamples):
 		self.distribution = distribution
-		#self.value = np.mean(distribution)
+		self.randomSamples = distribution.rvs(size = numSamples)
 		#need to figure out how to compute min and max
 		self.optimalReserve = self.getOptimalReserves(0, 100, distribution)
-
+		
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
 		possibleReserves = [x / 100. for x in distributionRange]
@@ -74,3 +81,4 @@ class Bidder:
 		#need to figure out what to do in case of multiple optimal single bidder reserves
 		else:
 			print "error"
+

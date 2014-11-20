@@ -1,4 +1,3 @@
-import numpy as np
 from scipy.stats import uniform
 #import matplotlib.pyplot as plt
 from VickreyAuction import VickreyAuction, Bidder
@@ -41,21 +40,28 @@ def runExperiment(auction):
 	y_revenue = []
 	for r in normReserves:
 		auction.setAnonymousReserve(r)
-		profit = auction.runAuction()
+		profit = auction.runXAuctions()
+		#print profit
 		x_reserve.append(r)
 		y_revenue.append(profit)
 	return (x_reserve, y_revenue)
-	
+
 def getRegularDistributions():
 	uni = uniform()
 	uni2 = uniform(loc=0.5, scale = 0.5)
 	return [uni, uni2]
 
 dis = getRegularDistributions()
-bid1 = Bidder(dis[0])
-bid2 = Bidder(dis[1])
-auction = VickreyAuction([bid1, bid2])
-revenue = auction.runOptimalAuction()
-print "optimal revenue"
-print revenue
+numSamples = 1000
+bid1 = Bidder(dis[0], numSamples)
+bid2 = Bidder(dis[1], numSamples)
+auction = VickreyAuction([bid1, bid2], numSamples)
+opt = auction.runXOptimalAuctions()
+(x,y) = runExperiment(auction)
+(mx, my) = findMaxReserve(x,y)
+print "optimal revenue: " + str(opt)
+print "best anonmymous reserve: " + str(mx)
+print "revenue under best anonymous reserve: " + str(my)
+print "ratio of opt: " + str(my/opt)
+
 	
