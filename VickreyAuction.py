@@ -19,6 +19,8 @@ class VickreyAuction:
 	
 	def runXAuctions(self):
 		singleAuctionRevenues = []
+		for j in xrange(len(self.bidders)):
+			self.bidders[j].resample()
 		for j in range(0, self.numSamples):
 			possiblePrices = [self.anonymousReserve]
 			for i in xrange(len(self.bidders)):
@@ -63,7 +65,10 @@ class Bidder:
 		self.randomSamples = distribution.rvs(size = numSamples)
 		#need to figure out how to compute min and max
 		self.optimalReserve = self.getOptimalReserves(0, 100, distribution)
-		
+	
+	def resample(self):
+		self.randomSamples = self.distribution.rvs(size = len(self.randomSamples))
+
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
 		possibleReserves = [x / 100. for x in distributionRange]
