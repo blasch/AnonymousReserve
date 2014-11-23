@@ -35,7 +35,7 @@ class VickreyAuction:
 
 	def runOptimalAuction(self):
 		possiblePrices = []
-		for i in xrange(self.bidders):
+		for i in xrange(len(self.bidders)):
 			if (self.bidders[i].value >= self.bidders[i].optimalReserve):
 				possiblePrices.append(self.bidders[i].value)
 			else:
@@ -46,9 +46,9 @@ class VickreyAuction:
 			if (winningBid == -1):
 				return 0
 			#there was a bid above the reserve
-			else:
+			else:##
 				winningBidderIndex = possiblePrices.remove(winningBid)
-				return max(self.bidders[winningBidderIndex].optimalReserve, max (possiblePrices))
+				return max(self.bidders[winningBidderIndex].optimalReserve, max(possiblePrices))
 
 class Bidder:
 
