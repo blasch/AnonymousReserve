@@ -1,4 +1,4 @@
-from scipy.stats import uniform
+import scipy.stats 
 #import matplotlib.pyplot as plt
 from VickreyAuction import VickreyAuction, Bidder
 
@@ -46,9 +46,14 @@ def runExperiment(auction):
 	return (x_reserve, y_revenue)
 
 def getRegularDistributions():
-	uni = uniform()
-	uni2 = uniform()
-	return [uni, uni2]
+	uni = scipy.stats.uniform()
+	norm = scipy.stats.norm()
+	gamma = scipy.stats.gamma()
+	exp = scipy.stats.expon()
+	chi = scipy.stats.chi()
+	chi2 = scipy.stats.chi2()
+	# include some fat tail distributions (alpha varied)
+	return [uni, norm, gamma, exp, chi, chi2]
 
 dis = getRegularDistributions()
 numSamples = 10000
