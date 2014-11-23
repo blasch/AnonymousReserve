@@ -52,12 +52,12 @@ def getRegularDistributions():
 	gamma = scipy.stats.gamma(3., loc = 0., scale = 2.)
 	exp = scipy.stats.expon()
 	# include some fat tail distributions (alpha varied)
-	return [uni, norm, exp]
+	return [uni, norm, gamma, exp]
 
 dis = getRegularDistributions()
 numSamples = 10000
-bid1 = Bidder(dis[2], numSamples)
-bid2 = Bidder(dis[1], numSamples)
+bid1 = Bidder(dis[3], numSamples)
+bid2 = Bidder(dis[0], numSamples)
 auction = VickreyAuction([bid1, bid2], numSamples)
 (x,y,o) = runExperimentOnAuction(auction)
 (mx, my) = findMaxReserve(x,y)
