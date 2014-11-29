@@ -62,11 +62,11 @@ class Bidder:
 		self.distribution = distribution
 		self.randomSamples = distribution.rvs(size = numSamples)
 		#need to figure out how to compute min and max
-		self.optimalReserve = self.getOptimalReserves(0, 100, distribution)
+		self.optimalReserve = self.getOptimalReserves(0, 10000, distribution)
 		
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
-		possibleReserves = [x / 100. for x in distributionRange]
+		possibleReserves = distributionRange
 		singleBidderRevenue = []
 		for r in possibleReserves:
 			if (distribution.cdf(r) > 0):
@@ -76,9 +76,12 @@ class Bidder:
 		maxSingleBidderRevenue = max(singleBidderRevenue)
 		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if j == maxSingleBidderRevenue]
 		optimalReserves = []
-		if (len(indicesOfMaxSingleBidderRevenue) == 1):
+		if (len(indicesOfMaxSingleBidderRevenue) >= 1):
+			print possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
 			return possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
 		#need to figure out what to do in case of multiple optimal single bidder reserves
 		else:
-			print "error"
+			print "error: length not right"
 
+		
+	
