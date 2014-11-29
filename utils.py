@@ -1,6 +1,6 @@
 import scipy.stats 
 import matplotlib.pyplot as plt
-from VickreyAuction import VickreyAuction, Bidder
+from VickreyAuction import VickreyAuction, Bidder, OneBidder
 from random import randint
 import numpy as np
 
@@ -42,6 +42,7 @@ def runExperimentOnAuction(auction):
 	y_revenue = []
 	opt_revenue = auction.runXOptimalAuctions()
 	for r in normReserves:
+		print r
 		auction.setAnonymousReserve(r)
 		profit = auction.runXAuctions()
 		x_reserve.append(r)
@@ -67,14 +68,14 @@ def getRegularDistributions():
 	gamma = scipy.stats.gamma(3., loc = 0., scale = 2.)
 	exp = scipy.stats.expon()
 	erd = getEqualRevenueDistribution()
-	sing = getSingleDefDistribution()
+	#sing = getSingleDefDistribution()
 	# include some fat tail distributions (alpha varied)
-	return [uni, norm, gamma, exp, erd, sing]
+	return [uni, norm, gamma, exp, erd]
 
 dis = getRegularDistributions()
 numSamples = 10000
 bid1 = Bidder(dis[4], numSamples)
-bid2 = Bidder(dis[5], numSamples)
+bid2 = OneBidder(numSamples)
 auction = VickreyAuction([bid1, bid2], numSamples)
 (x,y,o) = runExperimentOnAuction(auction)
 (mx, my) = findMaxReserve(x,y)

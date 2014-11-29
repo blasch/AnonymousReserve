@@ -56,13 +56,22 @@ class VickreyAuction:
 				singleAuctionRevenues.append(max(self.bidders[indicesOfMaxBidAboveReserve[0]].optimalReserve, max (possiblePrices)))
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
-class Bidder:
+class OneBidder:
+	def __init__(self, numSamples):
+		self.randomSamples = []
+		for i in range(0,numSamples):
+			self.randomSamples.append(1)
+		#need to figure out how to compute min and max
+		self.optimalReserve = 1
 
+	
+
+class Bidder:
 	def __init__(self, distribution, numSamples):
 		self.distribution = distribution
 		self.randomSamples = distribution.rvs(size = numSamples)
 		#need to figure out how to compute min and max
-		self.optimalReserve = self.getOptimalReserves(0, 10000, distribution)
+		self.optimalReserve = self.getOptimalReserves(0, 100000, distribution)
 		
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
