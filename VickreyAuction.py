@@ -1,3 +1,6 @@
+import numpy as np
+from scipy.optimize import brentq 
+
 class VickreyAuction:
 
 	def __init__(self, bidders, numSamples):
@@ -17,6 +20,7 @@ class VickreyAuction:
 	def removeBidder(self, index):
 		self.bidders.remove(index)
 	
+	# this may be wrong
 	def runXAuctions(self):
 		singleAuctionRevenues = []
 		for j in xrange(len(self.bidders)):
@@ -58,32 +62,51 @@ class VickreyAuction:
 				singleAuctionRevenues.append(max(self.bidders[indicesOfMaxBidAboveReserve[0]].optimalReserve, max (possiblePrices)))
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
-class Bidder:
+class OneBidder:
+	def __init__(self, numSamples):
+		self.randomSamples = []
+		for i in range(0,numSamples):
+			self.randomSamples.append(1)
+		#need to figure out how to compute min and max
+		self.optimalReserve = 1
 
+	
+
+class Bidder:
 	def __init__(self, distribution, numSamples):
 		self.distribution = distribution
 		self.randomSamples = distribution.rvs(size = numSamples)
+		print max(self.randomSamples)
 		#need to figure out how to compute min and max
-		self.optimalReserve = self.getOptimalReserves(0, 100, distribution)
-	
-	def resample(self):
-		self.randomSamples = self.distribution.rvs(size = len(self.randomSamples))
+		self.optimalReserve = self.getOptimalReserves(1, int(max(self.randomSamples)), distribution)
+		#self.optimalReserve = self.getOptReserve()
+
+	def phi(self, x):
+		return x - (1 - self.distribution.cdf(x))/self.distribution.pdf(x) 
+
+	def getOptReserve(self):
+		x0 = brentq(self.phi, 1, 100000) 
+		print x0
+		return x0
 
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
-		possibleReserves = [x / 100. for x in distributionRange]
+		possibleReserves = distributionRange
 		singleBidderRevenue = []
 		for r in possibleReserves:
 			if (distribution.cdf(r) > 0):
-				singleBidderRevenue.append(r * (1 - distribution.cdf(r)))
+				singleBidderRevenue.append(r * (1 - distribution.cdf(r))) #is this correct?
 			else:
 				singleBidderRevenue.append(-1)
 		maxSingleBidderRevenue = max(singleBidderRevenue)
 		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if j == maxSingleBidderRevenue]
 		optimalReserves = []
-		if (len(indicesOfMaxSingleBidderRevenue) == 1):
+		if (len(indicesOfMaxSingleBidderRevenue) >= 1):
+			#print possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
 			return possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
 		#need to figure out what to do in case of multiple optimal single bidder reserves
 		else:
-			print "error"
+			print "error: length not right"
 
+		
+	
