@@ -23,8 +23,6 @@ class VickreyAuction:
 	# this may be wrong
 	def runXAuctions(self):
 		singleAuctionRevenues = []
-		for j in xrange(len(self.bidders)):
-			self.bidders[j].resample()
 		for j in range(0, self.numSamples):
 			possiblePrices = [self.anonymousReserve]
 			for i in xrange(len(self.bidders)):
