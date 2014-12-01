@@ -1,12 +1,13 @@
 import numpy as np
+from math import *
 from scipy.optimize import brentq 
 
 class VickreyAuction:
 
-	def __init__(self, bidders, numSamples):
+	def __init__(self, bidders):
 		self.bidders = bidders
 		self.anonymousReserve = 0
-		self.numSamples = numSamples
+		self.numSamples = None
 	
 	def setAnonymousReserve(self, r):
 		self.anonymousReserve = r
@@ -20,10 +21,25 @@ class VickreyAuction:
 	def removeBidder(self, index):
 		self.bidders.remove(index)
 	
-	# this may be wrong
+	def sampleBidders(self):
+		for i in xrange(len(self.bidders)):
+			self.bidders[i].sample(self.numSamples)
+
+	def setNumSamplesForAnonAuction(self):
+		self.numSamples = 2 * int(pow(ceil(self.anonymousReserve), 2))
+
+
+	def setNumSamplesForOptAuction(self):
+		maxReserve = 0
+		for i in xrange(len(self.bidders)):
+			if (self.bidders[i].optimalReserve > maxReserve):
+				maxReserve = self.bidders[i].optimalReserve
+		self.numSamples = 2 * int(pow(ceil(maxReserve), 2))
+
 	def runXAuctions(self):
+		self.setNumSamplesForAnonAuction()
+		self.sampleBidders()
 		singleAuctionRevenues = []
-		self.bidders[0].resample()
 		for j in range(0, self.numSamples):
 			possiblePrices = [self.anonymousReserve]
 			for i in xrange(len(self.bidders)):
@@ -40,6 +56,8 @@ class VickreyAuction:
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
 	def runXOptimalAuctions(self):
+		self.setNumSamplesForOptAuction()
+		self.sampleBidders()
 		singleAuctionRevenues = []
 		for j in range(0, self.numSamples):
 			possiblePrices = []
@@ -63,27 +81,25 @@ class VickreyAuction:
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
 class OneBidder:
-	def __init__(self, numSamples):
-		self.randomSamples = []
-		for i in range(0,numSamples):
-			self.randomSamples.append(1)
-		#need to figure out how to compute min and max
+	def __init__(self):
+		self.randomSamples = None
 		self.optimalReserve = 1
 
+	def sample(self, numSamples):
+		self.randomSamples = []
+		for i in range(0, numSamples):
+			self.randomSamples.append(1)
 
 class Bidder:
-	def __init__(self, distribution, numSamples):
+	def __init__(self, distribution):
 		self.distribution = distribution
-		self.randomSamples = distribution.rvs(size = numSamples)
-		#need to figure out how to compute min and max
-		self.optimalReserve = self.getOptimalReserves(1, int(max(self.randomSamples)), distribution)
-		#self.optimalReserve = self.getOptReserve()
+		self.randomSamples = None
+		self.optimalReserve = None
+		#self.optimalReserves = self.getOptimalReserves(1, 10, distribution)
 
-	def phi(self, x):
-		return x - (1 - self.distribution.cdf(x))/self.distribution.pdf(x) 
-
-	def resample(self):
-		self.randomSamples = self.distribution.rvs(size = len(self.randomSamples))
+	def sample(self, numSamples):
+		self.randomSamples = []
+		self.randomSamples = self.distribution.rvs(size = numSamples)
 		
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
@@ -95,13 +111,15 @@ class Bidder:
 			else:
 				singleBidderRevenue.append(-1)
 		maxSingleBidderRevenue = max(singleBidderRevenue)
-		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if j == maxSingleBidderRevenue]
-		optimalReserves = []
+		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if (((j - 0.01) <= maxSingleBidderRevenue - 0.01) and ((j + 0.01) >= maxSingleBidderRevenue))]
+		
 		if (len(indicesOfMaxSingleBidderRevenue) >= 1):
-			return possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
-		#need to figure out what to do in case of multiple optimal single bidder reserves
+			optimalReserves = []
+			for i in range(0, len(indicesOfMaxSingleBidderRevenue)):
+				optimalReserves.append(possibleReserves[indicesOfMaxSingleBidderRevenue[i]])
+			return optimalReserves
 		else:
-			print "error: length not right"
+			print "error: no optimal reserve"
 
 		
 	

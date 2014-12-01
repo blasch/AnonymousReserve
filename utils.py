@@ -42,6 +42,8 @@ def runExperimentOnAuction(auction, max):
 	y_revenue = []
 	opt_revenue = auction.runXOptimalAuctions()
 	for r in normReserves:
+		if (r % 10 != 0): 
+			continue
 		auction.setAnonymousReserve(r)
 		profit = auction.runXAuctions()
 		x_reserve.append(r)
@@ -71,11 +73,11 @@ def getRegularDistributions():
 	return [uni, norm, gamma, exp, erd]
 
 dis = getRegularDistributions()
-numSamples = 1000
-bid1 = Bidder(dis[4], numSamples)
-bid2 = OneBidder(numSamples)
-auction = VickreyAuction([bid1, bid2], numSamples)
-(x,y,o) = runExperimentOnAuction(auction, int(max(bid1.randomSamples)))
+bid1 = Bidder(dis[4])
+bid2 = OneBidder()
+auction = VickreyAuction([bid1, bid2])
+bid1.optimalReserve = 100
+(x,y,o) = runExperimentOnAuction(auction, 100)
 (mx, my) = findMaxReserve(x,y)
 print "optimal revenue: " + str(o)
 print "best anonmymous reserve: " + str(mx)
