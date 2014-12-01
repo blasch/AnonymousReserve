@@ -23,6 +23,7 @@ class VickreyAuction:
 	# this may be wrong
 	def runXAuctions(self):
 		singleAuctionRevenues = []
+		self.bidders[0].resample()
 		for j in range(0, self.numSamples):
 			possiblePrices = [self.anonymousReserve]
 			for i in xrange(len(self.bidders)):
@@ -52,6 +53,7 @@ class VickreyAuction:
 			winningBid = max(possiblePrices)
 			#nobody bid above the reserve
 			if (winningBid == -1):
+				sys.exit()
 				singleAuctionRevenues.append(0)
 			#there was a bid above the reserve
 			else:
@@ -68,13 +70,11 @@ class OneBidder:
 		#need to figure out how to compute min and max
 		self.optimalReserve = 1
 
-	
 
 class Bidder:
 	def __init__(self, distribution, numSamples):
 		self.distribution = distribution
 		self.randomSamples = distribution.rvs(size = numSamples)
-		print max(self.randomSamples)
 		#need to figure out how to compute min and max
 		self.optimalReserve = self.getOptimalReserves(1, int(max(self.randomSamples)), distribution)
 		#self.optimalReserve = self.getOptReserve()
@@ -82,10 +82,8 @@ class Bidder:
 	def phi(self, x):
 		return x - (1 - self.distribution.cdf(x))/self.distribution.pdf(x) 
 
-	def getOptReserve(self):
-		x0 = brentq(self.phi, 1, 100000) 
-		print x0
-		return x0
+	def resample(self):
+		self.randomSamples = self.distribution.rvs(size = len(self.randomSamples))
 		
 	def getOptimalReserves(self, minimum, maximum, distribution):
 		distributionRange = range(minimum, maximum)
@@ -100,7 +98,6 @@ class Bidder:
 		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if j == maxSingleBidderRevenue]
 		optimalReserves = []
 		if (len(indicesOfMaxSingleBidderRevenue) >= 1):
-			#print possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
 			return possibleReserves[indicesOfMaxSingleBidderRevenue[0]]
 		#need to figure out what to do in case of multiple optimal single bidder reserves
 		else:

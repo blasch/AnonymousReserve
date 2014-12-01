@@ -42,9 +42,6 @@ def runExperimentOnAuction(auction, max):
 	y_revenue = []
 	opt_revenue = auction.runXOptimalAuctions()
 	for r in normReserves:
-		if(r%1000 != 0):
-			continue
-		print r
 		auction.setAnonymousReserve(r)
 		profit = auction.runXAuctions()
 		x_reserve.append(r)
@@ -74,7 +71,7 @@ def getRegularDistributions():
 	return [uni, norm, gamma, exp, erd]
 
 dis = getRegularDistributions()
-numSamples = 100000
+numSamples = 1000
 bid1 = Bidder(dis[4], numSamples)
 bid2 = OneBidder(numSamples)
 auction = VickreyAuction([bid1, bid2], numSamples)
