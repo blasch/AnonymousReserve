@@ -58,7 +58,9 @@ where for bidder i and his distribution F,
 Which is bidder i's \emph{virtual value} function. Therefore to optimize revenue the mechanism (read: auction) chosen should maximize each bidders virtual value function! The optimal auction to maximize revenue is therefore a Vickrey auction with a bidder specific reserve [6] \[ r = \phi^{-1}(0)\]. This mechanism is chosen because it optimizes social welfare (in this case virtual welfare) and thus obtains optimal revenue. It will provide a benchmark for the performance of mechanisms with anonymous reserves.
 
 \subsection{Regular Distributions}
+Another point to look at is the nature of the distributions bidders can bid from. While realistically there can be a wide range of distributions for bidders that my not align well with idealized functions, it is safe to focus on a set of distributions with nice properties. The distributions we will explore are called Regular distributions and are defined as functions whose virtual value functions are non-decreasing. When all bidder's distributions are regular, the mechanism maximizing virtual welfare is monotone [WHY IS THIS IMPORTANT?]. 
 
+Common distributions in this class include the normal distribution, exponential distribution and uniform distribution. Some equally interesting distributions are "fat-tailed" distributions [DEFINE]. Since we are looking to show a worst-case bound on the revenue in an arbitrary anonymous reserve auction with regular bidders, we want to investigate the "least regular" function in this class, the equal revenue distribution[8].[DEFINE]. It lies on the boundary of regularity as it's virtual value function is flat. The proof used in Hartline [3] for the upper bound he proposes uses it for this reason.
 
 \section{Methodology}
 
