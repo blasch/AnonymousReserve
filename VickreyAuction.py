@@ -69,9 +69,10 @@ class VickreyAuction:
 					#in order to keep indices of bidders
 					possiblePrices.append(-1)
 			winningBid = max(possiblePrices)
+			if (winningBid < 1):
+				sys.exit()
 			#nobody bid above the reserve
 			if (winningBid == -1):
-				sys.exit()
 				singleAuctionRevenues.append(0)
 			#there was a bid above the reserve
 			else:
@@ -91,32 +92,42 @@ class OneBidder:
 			self.randomSamples.append(1)
 
 class Bidder:
-	def __init__(self, distribution):
+	def __init__(self, distribution, minimum, maximum):
 		self.distribution = distribution
 		self.randomSamples = None
 		self.optimalReserve = None
-		#self.optimalReserves = self.getOptimalReserves(1, 10, distribution)
+		self.optimalReserves = self.getOptimalReserves(minimum, maximum, distribution)
 
 	def sample(self, numSamples):
 		self.randomSamples = []
 		self.randomSamples = self.distribution.rvs(size = numSamples)
 		
 	def getOptimalReserves(self, minimum, maximum, distribution):
-		distributionRange = range(minimum, maximum)
-		possibleReserves = distributionRange
+		amountToIncrement = 1
+		if ((maximum - minimum) <= 2): 
+			amountToIncrement = 0.01
+		elif ((maximum - minimum) <= 10):
+			amountToIncrement = 0.1
 		singleBidderRevenue = []
+		possibleReserves = []
+		possibleReserve = minimum
+		while (possibleReserve <= maximum):
+			possibleReserves.append(possibleReserve)
+			possibleReserve = possibleReserve + amountToIncrement
 		for r in possibleReserves:
 			if (distribution.cdf(r) > 0):
-				singleBidderRevenue.append(r * (1 - distribution.cdf(r))) #is this correct?
+				singleBidderRevenue.append(r * (1 - distribution.cdf(r)))
 			else:
 				singleBidderRevenue.append(-1)
+			r = r + amountToIncrement
 		maxSingleBidderRevenue = max(singleBidderRevenue)
-		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if (((j - 0.01) <= maxSingleBidderRevenue - 0.01) and ((j + 0.01) >= maxSingleBidderRevenue))]
-		
+		indicesOfMaxSingleBidderRevenue = [i for i, j in enumerate(singleBidderRevenue) if (((j - 0.00001) <= maxSingleBidderRevenue) and ((j + 0.00001) >= maxSingleBidderRevenue))]
 		if (len(indicesOfMaxSingleBidderRevenue) >= 1):
 			optimalReserves = []
 			for i in range(0, len(indicesOfMaxSingleBidderRevenue)):
 				optimalReserves.append(possibleReserves[indicesOfMaxSingleBidderRevenue[i]])
+			if (len(indicesOfMaxSingleBidderRevenue) == 1):
+				self.optimalReserve = optimalReserves[0]
 			return optimalReserves
 		else:
 			print "error: no optimal reserve"

@@ -64,7 +64,7 @@ def getSingleDefDistribution():
 	return scipy.stats.rv_discrete(name='single', values=(xk, pk))
 
 def getRegularDistributions():
-	uni = scipy.stats.uniform()
+	uni = scipy.stats.uniform(.5, 1)
 	norm = scipy.stats.norm()
 	gamma = scipy.stats.gamma(3., loc = 0., scale = 2.)
 	exp = scipy.stats.expon()
@@ -73,9 +73,10 @@ def getRegularDistributions():
 	return [uni, norm, gamma, exp, erd]
 
 dis = getRegularDistributions()
-bid1 = Bidder(dis[4])
-bid2 = OneBidder()
-auction = VickreyAuction([bid1, bid2])
+bid1 = Bidder(dis[4], 1, 12)
+bid2 = Bidder(dis[0], 0.5, 1.5)
+bid3 = OneBidder()
+auction = VickreyAuction([bid1, bid2, bid3])
 bid1.optimalReserve = 100
 (x,y,o) = runExperimentOnAuction(auction, 100)
 (mx, my) = findMaxReserve(x,y)
@@ -83,6 +84,5 @@ print "optimal revenue: " + str(o)
 print "best anonmymous reserve: " + str(mx)
 print "revenue under best anonymous reserve: " + str(my)
 print "ratio of opt: " + str(my/o)
-
 graphData("test", x, y)
 	
