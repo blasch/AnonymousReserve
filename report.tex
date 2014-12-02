@@ -1,0 +1,47 @@
+\documentclass{acm_proc_article-sp}
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{wasysym}
+
+
+\begin{document}
+
+\title{Anonymous Reserve Auction Revenue Bounds \\
+{\normalsize Code available at: \url{https://github.com/blasch/AnonymousReserve}}} 
+\subtitle{}
+
+\numberofauthors{2} 
+\author{
+% 1st. author
+\alignauthor 
+Robert Sneidmann \\
+	\affaddr{}
+% 2nd. author
+\alignauthor Benjamin La Schiazza\\
+	\affaddr{260531181}
+% 3rd. author
+}
+
+\date{Nov30}
+
+\maketitle
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+Auction theory is an incredibly relevant field to investigate as it has many modern applications. Society has been running auctions for centuries yet only now with advances in computing technology and mathematics have they been explored in an academic setting. A number of fundamental results have emerged from applying mathematical models to these settings. While some results are incredibly practical and have shaped business models, others remain inapplicable due to their inherent assumptions. 
+
+One of these assumptions involves the nature of the distributions bidders choose they value for an object from. A very common practice is to assume all bidders pick values from the same distribution. In modern auctions settings found especially on the internet, bidders can come from a range of cultures and demographics and makes the applicability of theory stemming from these results not practical. Another standard found in the basic auction revenue theory (eg. Myerson's Lemma[1]) is that to achieve optimal revenue, bidders must be assigned bidder specific reserves[2]. While this may be feasible when all bidders have identical distributions (meaning their reserves turn out to be the same), in realistic settings with multiple distributions, it is hard to justify to real bidders that certain participants have a lower or higher reserve to meet to be eligible in the auction. In the name of fairness, though to the determinant of obtaining optimal revenue, real auctions (eg. Ebay) employ a general reserve for all participants. Some general bounds have been noted regarding the approximation of optimal revenue with anonymous reserves but they are not tight[3]. 
+
+Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.18).
+
+\end{document}
