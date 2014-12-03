@@ -34,16 +34,24 @@ def findMaxReserve(x_reserves, y_revenue):
 	for m in max_indices:
 		reserves.append(x_reserves[m])
 	return (reserves, max_revenue)
-	
-def runExperimentOnAuction(auction, max):
-	reserves = range(1, max)
-	normReserves = reserves
+
+def getAnonymousReservesToExplore(minReserve, maxReserve):
+	possibleReserve = minReserve
+	reservesToExplore = []
+	while (possibleReserve <= maxReserve):
+		reservesToExplore.append(possibleReserve)
+		if (possibleReserve <= 5):
+			possibleReserve = possibleReserve + 0.1
+		else:
+			possibleReserve = possibleReserve + 1
+	return reservesToExplore
+
+def runExperimentOnAuction(auction, min, max):
+	reservesToExplore = getAnonymousReservesToExplore(min, max)
 	x_reserve = []
 	y_revenue = []
 	opt_revenue = auction.runXOptimalAuctions()
-	for r in normReserves:
-		if (r % 10 != 0): 
-			continue
+	for r in reservesToExplore:
 		auction.setAnonymousReserve(r)
 		profit = auction.runXAuctions()
 		x_reserve.append(r)
@@ -58,13 +66,8 @@ def getEqualRevenueDistribution():
 			return 1-1/x
 	return rv(name='equalrevdist', a=1, b=float("inf"))
 
-def getSingleDefDistribution():
-	pk = (1)
-	xk = np.arange(1)
-	return scipy.stats.rv_discrete(name='single', values=(xk, pk))
-
 def getRegularDistributions():
-	uni = scipy.stats.uniform(.5, 1)
+	uni = scipy.stats.uniform()
 	norm = scipy.stats.norm()
 	gamma = scipy.stats.gamma(3., loc = 0., scale = 2.)
 	exp = scipy.stats.expon()
@@ -73,12 +76,11 @@ def getRegularDistributions():
 	return [uni, norm, gamma, exp, erd]
 
 dis = getRegularDistributions()
-bid1 = Bidder(dis[4], 1, 12)
-bid2 = Bidder(dis[0], 0.5, 1.5)
-bid3 = OneBidder()
-auction = VickreyAuction([bid1, bid2, bid3])
+bid1 = Bidder(dis[4], 1, 2)
+bid2 = OneBidder()
+auction = VickreyAuction([bid1, bid2])
 bid1.optimalReserve = 100
-(x,y,o) = runExperimentOnAuction(auction, 100)
+(x,y,o) = runExperimentOnAuction(auction, 0, 5)
 (mx, my) = findMaxReserve(x,y)
 print "optimal revenue: " + str(o)
 print "best anonmymous reserve: " + str(mx)
