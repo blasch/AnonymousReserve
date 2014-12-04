@@ -99,51 +99,24 @@ class VickreyAuction:
 					singleAuctionRevenues.append(price)
 				#multiple bids with same virtual value
 				else:
-					possiblePrices = []
-					winningBidderIndex = -1
-					winningBid = 0
-					for bidderIndex in indicesOfMaxVirtualBid:
-						possiblePrices.append(possibleWinningBids[bidderIndex])
-						if (possibleWinningBids[bidderIndex] > winningBid):
-							winningBid = possibleWinningBids[bidderIndex]
-							winningBidderIndex = bidderIndex
-					if (self.bidders[winningBidderIndex].isEVD()):
-						possiblePrices.remove(winningBid)
-						singleAuctionRevenues.append(max(self.bidders[winningBidderIndex].optimalReserve, max(possiblePrices)))
-					else:
-						singleAuctionRevenues.append(max(possiblePrices))	
+					for index in indicesOfMaxVirtualBid:
+						if (not self.bidders[index].isEVD() and not self.bidders[index].isOneBidder()): 
+							raise Exception("the probability of this happening is zero")
+					winningBid = max(possibleWinningBids)
+					indexOfWinningBidder = [i for i, k in enumerate(possibleWinningBids) if k == winningBid]
+					singleAuctionRevenues.append(self.bidders[indexOfWinningBidder[0]].optimalReserve)
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
-
-	# def findOptimalAuctionInMultipleEVDSetting(self):		
-	# 	reservesToAnalyze = []
-	# 	reserve = 1
-	# 	while (reserve < 1000):
-	# 		reservesToAnalyze.append(reserve)
-	# 		if (reserve < 2):
-	# 			reserve = reserve + 0.1
-	# 		elif (reserve < 5):
-	# 			reserve = reserve + 1
-	# 		else:
-	# 			reserve = reserve * 2 
-	# 	revenue = []
-	# 	auctionDetails = []
-	# 	for r1 in reservesToAnalyze:
-	# 		self.bidders[0].optimalReserve = r1
-	# 		for r2 in reservesToAnalyze:
-	# 			self.bidders[1].optimalReserve = r2
-	# 			profit = self.runXOptimalAuctions()
-	# 			revenue.append(profit)
-	# 			auctionDetails.append([r1, r2, profit])
-	# 	maxRevenue = max(revenue)
-	# 	print auctionDetails
-	# 	for auctions in auctionDetails:
-	# 		if (auctions[2] == maxRevenue):
-	# 			return (auctions[0], auctions[1], auctions[2])
 
 class OneBidder:
 	def __init__(self):
 		self.randomSamples = None
 		self.optimalReserve = 1
+
+	def isEVD(self):
+		return False
+
+	def isOneBidder(self):
+		return True
 
 	def phi(self, x):
 		return 0
@@ -157,12 +130,14 @@ class Bidder:
 	def __init__(self, distribution, minimum, maximum):
 		self.distribution = distribution
 		self.randomSamples = None
-		#single reserve for non EVD bidder and array of reserves for EVD bidder
 		self.optimalReserve = self.setOptimalReserve(minimum, maximum)
 
 	def isEVD(self):
 		if (self.distribution.name == "equalrevdist"):	
 			return True
+		return False
+
+	def isOneBidder(self):
 		return False
 
 	def phi(self, x):
@@ -188,7 +163,7 @@ class Bidder:
 	def setOptimalReserve(self, minReserve, maxReserve):	
 		reservesToExplore = self.getOptimalReservesToExplore(minReserve, maxReserve)
 		if (self.isEVD()): 
-			return reservesToExplore
+			return maxReserve
 		else:
 			postedPriceRevenue = []
 			for r in reservesToExplore:
