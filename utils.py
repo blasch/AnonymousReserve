@@ -97,12 +97,11 @@ def save_data(name, x, y, mx, my, o, ratio):
 	with open(str(name) + '_data.csv', 'w') as fp:
 		a = csv.writer(fp, delimiter=',')
 		a.writerow(["ratio", ratio])
+		a.writerow(["Anonymous"])
+		a.writerow([mx, my])
 		a.writerow(["optimal", o])
 		for i in xrange(len(x)):
 			a.writerow([x[i], y[i]])
-		a.writerow(["Anonymous"])
-		for i in xrange(len(mx)):
-			a.writerow([mx[i], my[i]])
 
 
 def getRegularDistributions():
@@ -122,10 +121,11 @@ dis = getRegularDistributions()
 #create all bidders
 bid1 = OneBidder()
 erd = getEqualRevenueDistribution()
-bid2 = Bidder(erd, 0, 100)
+bid2 = Bidder(erd, 0.1, 100)
 bidders = [[bid1, bid2]]
 for d in dis:
-	bidder = Bidder(d, 0, 100)
+	print len(bidders)
+	bidder = Bidder(d, 0.1, 100)
 	bidders.append([bidder, bid2])
 
 #Now pair up and collect data
