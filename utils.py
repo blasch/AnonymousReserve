@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from VickreyAuction import VickreyAuction, Bidder, OneBidder
 from random import randint
 import numpy as np
+import csv
 
 def saveDataToFile(filename, data):
 	np.save(filename, data)
@@ -66,24 +67,72 @@ def getEqualRevenueDistribution():
 			return 1-1/x
 	return rv(name='equalrevdist', a=1, b=float("inf"))
 
+def getalphatwoDistribution():
+	class rv(scipy.stats.rv_continuous):
+		def _pdf(self, x):
+			return 1/(x*x*x)
+	return rv(name='a2dist', a=1, b=float("inf"))
+
+
+def getalphathreeDistribution():
+	class rv(scipy.stats.rv_continuous):
+		def _pdf(self, x):
+			return 1/(x*x*x*x)
+	return rv(name='a3dist', a=1, b=float("inf"))
+
+
+def getalphafourDistribution():
+	class rv(scipy.stats.rv_continuous):
+		def _pdf(self, x):
+			return 1/(x*x*x*x*x)
+	return rv(name='a4dist', a=1, b=float("inf"))
+
+def save_data(name, x, y, mx, my, o, ratio):
+	with open(str(name) + '_data.csv', 'w') as fp:
+		a = csv.writer(fp, delimiter=',')
+		a.writerow(["ratio", ratio])
+		a.writerow(["optimal", o])
+		for i in xrange(len(x)):
+			a.writerow([x[i], y[i]])
+		a.writerow(["Anonymous"])
+		for i in xrange(len(mx)):
+			a.writerow([mx[i], my[i]])
+
+
 def getRegularDistributions():
 	uni = scipy.stats.uniform()
 	norm = scipy.stats.norm()
 	gamma = scipy.stats.gamma(3., loc = 0., scale = 2.)
 	exp = scipy.stats.expon()
 	erd = getEqualRevenueDistribution()
+	a2 = getalphatwoDistribution()
+	a3 = getalphathreeDistribution()
+	a4 = getalphafourDistribution()
 	# include some fat tail distributions (alpha varied)
-	return [uni, norm, gamma, exp, erd]
+	return [uni, norm, gamma, exp, erd, a2, a3, a4]
 
 dis = getRegularDistributions()
-bid1 = Bidder(dis[4], 0, 100)
-bid2 = OneBidder()
-auction = VickreyAuction([bid1, bid2])
-(x,y,o) = runExperimentOnAuction(auction, 1, 5)
-(mx, my) = findMaxReserve(x,y)
-print "optimal revenue: " + str(o)
-print "best anonymous reserve: " + str(mx)
-print "revenue under best anonymous reserve: " + str(my)
-print "ratio of opt: " + str(my/o)
-graphData("test", x, y)
+
+#create all bidders
+bid1 = OneBidder()
+erd = getEqualRevenueDistribution()
+bidders = [[bid1, erd]]
+for d in dis
+	bidder = Bidder(d, 0, 100)
+	bidders.append([bidder, erd])
+
+#Now pair up and collect data
+for pair in bidders:
+	graphname = str(pair[0].distribution.name) + "_" + str(pair[1].distribution.name)
+	auction = VickreyAuction([pair[0], pair[1]])
+	(x,y,o) = runExperimentOnAuction(auction, 1, 5)
+	(mx, my) = findMaxReserve(x,y)
+	print graphname
+	print "optimal revenue: " + str(o)
+	print "best anonymous reserve: " + str(mx)
+	print "revenue under best anonymous reserve: " + str(my)
+	print "ratio of opt: " + str(my/o)
+	ratio = str(my/o)
+	graphData(graphname, x, y)
+	save_data(graphname, x, y, mx, my, o, ratio)
 	
