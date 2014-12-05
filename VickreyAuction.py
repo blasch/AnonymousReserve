@@ -42,6 +42,8 @@ class VickreyAuction:
 				probOfMeetingReserve = 1 - self.bidders[i].distribution.cdf(self.bidders[i].optimalReserve)	
 				if (probOfMeetingReserve < minProbOfMeetingReserve):
 					minProbOfMeetingReserve = probOfMeetingReserve
+		if(minProbOfMeetingReserve == 0):
+			return 10000
 		return min(1000 * int(pow(1/minProbOfMeetingReserve, 2)), 10000)
 
 	def runXAuctions(self):
