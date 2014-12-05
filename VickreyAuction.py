@@ -54,6 +54,10 @@ class VickreyAuction:
 				singleAuctionRevenues.append((max(possiblePrices)))
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
 
+
+	def getPayment(self, x, winningBidder, secondHighestVirtualBid):
+		return self.bidders[winningBidder].phi(x) - secondHighestVirtualBid
+	
 	def runXOptimalAuctions(self):
 		numSamples = self.getNumSamplesForOptAuction()
 		self.sampleBidders(numSamples)
@@ -94,8 +98,7 @@ class VickreyAuction:
 					winningBidder = indicesOfMaxVirtualBid[0]
 					virtualBids.remove(maxVirtualBid)
 					secondHighestVirtualBid = max(virtualBids)
-					price = fsolve(self.bidders[winningBidder].phi, maxVirtualBid)
-					print price
+					price = fsolve(self.getPayment, maxVirtualBid, args = (winningBidder, secondHighestVirtualBid))
 					singleAuctionRevenues.append(price)
 				#multiple bids with same virtual value
 				else:
@@ -106,6 +109,10 @@ class VickreyAuction:
 					indexOfWinningBidder = [i for i, k in enumerate(possibleWinningBids) if k == winningBid]
 					singleAuctionRevenues.append(self.bidders[indexOfWinningBidder[0]].optimalReserve)
 		return sum(singleAuctionRevenues) / float(len(singleAuctionRevenues))
+
+
+		def getPayment(self, x, winningBidder, secondHighestVirtualBid):
+			return self.bidders[winningBidder].phi(x) - secondHighestVirtualBid
 
 class OneBidder:
 	def __init__(self):
@@ -126,6 +133,7 @@ class OneBidder:
 		for i in range(0, numSamples):
 			self.randomSamples.append(1)
 
+
 class Bidder:
 	def __init__(self, distribution, minimum, maximum):
 		self.distribution = distribution
@@ -133,8 +141,9 @@ class Bidder:
 		self.optimalReserve = self.setOptimalReserve(minimum, maximum)
 
 	def isEVD(self):
-		if (self.distribution.name == "equalrevdist"):	
-			return True
+		if (hasattr(self.distribution, 'name')):
+			if (self.distribution.name == "equalrevdist"):	
+				return True
 		return False
 
 	def isOneBidder(self):
@@ -172,9 +181,9 @@ class Bidder:
 				else:
 					postedPriceRevenue.append(-1)
 			maxPostedPriceRevenue = max(postedPriceRevenue)
-			indicesOfMaxPostedPriceRevenue = [i for i, j in enumerate(postedPriceRevenue) if (((j - 0.00001) <= maxPostedPriceRevenue) and ((j + 0.00001) >= maxSingleBidderRevenue))]
+			indicesOfMaxPostedPriceRevenue = [i for i, j in enumerate(postedPriceRevenue) if (((j - 0.00001) <= maxPostedPriceRevenue) and ((j + 0.00001) >= maxPostedPriceRevenue))]
 			if (len(indicesOfMaxPostedPriceRevenue) == 1):
-				return reservesToExplore[indicesOfMaxPostedPriceRevenue[i]]
+				return reservesToExplore[indicesOfMaxPostedPriceRevenue[0]]
 			else:
 				print "error: no optimal reserve"
 

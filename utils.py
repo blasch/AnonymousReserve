@@ -76,10 +76,10 @@ def getRegularDistributions():
 	return [uni, norm, gamma, exp, erd]
 
 dis = getRegularDistributions()
-bid1 = Bidder(dis[4], 1, 100)
-bid2 = OneBidder()
+bid1 = Bidder(dis[0], 0, 1)
+bid2 = Bidder(dis[0], 0, 1)
 auction = VickreyAuction([bid1, bid2])
-(x,y,o) = runExperimentOnAuction(auction, 0, 5)
+(x,y,o) = runExperimentOnAuction(auction, 0, 1)
 (mx, my) = findMaxReserve(x,y)
 print "optimal revenue: " + str(o)
 print "best anonmymous reserve: " + str(mx)
