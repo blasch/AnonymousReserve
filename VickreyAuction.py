@@ -174,18 +174,7 @@ class Bidder:
 		if (self.isEVD()): 
 			return maxReserve
 		else:
-			postedPriceRevenue = []
-			for r in reservesToExplore:
-				if (self.distribution.cdf(r) > 0):
-					postedPriceRevenue.append(r * (1 - self.distribution.cdf(r)))
-				else:
-					postedPriceRevenue.append(-1)
-			maxPostedPriceRevenue = max(postedPriceRevenue)
-			indicesOfMaxPostedPriceRevenue = [i for i, j in enumerate(postedPriceRevenue) if (((j - 0.00001) <= maxPostedPriceRevenue) and ((j + 0.00001) >= maxPostedPriceRevenue))]
-			if (len(indicesOfMaxPostedPriceRevenue) == 1):
-				return reservesToExplore[indicesOfMaxPostedPriceRevenue[0]]
-			else:
-				print "error: no optimal reserve"
+			return fsolve(self.phi, (maxReserve - minReserve)/2)
 
 
 		
