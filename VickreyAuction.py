@@ -25,15 +25,23 @@ class VickreyAuction:
 			self.bidders[i].sample(numSamples)
 
 	def getNumSamplesForAnonAuction(self):
-		return max(1000, 2 * int(pow(ceil(self.anonymousReserve), 2)))
+		minProbOfMeetingReserve = 1
+		for i in xrange(len(self.bidders)):
+			if (not self.bidders[i].isOneBidder()): 
+				probOfMeetingReserve = 1 - self.bidders[i].distribution.cdf(self.anonymousReserve)
+				if (probOfMeetingReserve < minProbOfMeetingReserve):
+					minProbOfMeetingReserve = probOfMeetingReserve
+		return min(1000 * int(pow(1/minProbOfMeetingReserve, 2)), 10000)
 
 
 	def getNumSamplesForOptAuction(self):
-		maxReserve = 0
+		minProbOfMeetingReserve = 1
 		for i in xrange(len(self.bidders)):
-			if (self.bidders[i].optimalReserve > maxReserve):
-				maxReserve = self.bidders[i].optimalReserve
-		return max(1000, 2 * int(pow(ceil(maxReserve), 2)))
+			if (not self.bidders[i].isOneBidder()): 
+				probOfMeetingReserve = 1 - self.bidders[i].distribution.cdf(self.bidders[i].optimalReserve)	
+				if (probOfMeetingReserve < minProbOfMeetingReserve):
+					minProbOfMeetingReserve = probOfMeetingReserve
+		return min(1000 * int(pow(1/minProbOfMeetingReserve, 2)), 10000)
 
 	def runXAuctions(self):
 		numSamples = self.getNumSamplesForAnonAuction()
