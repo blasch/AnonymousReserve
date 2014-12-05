@@ -129,8 +129,9 @@ for d in dis:
 	bidders.append([bidder, bid2])
 
 #Now pair up and collect data
-for pair in bidders:
-	graphname = str(pair[0].distribution.name) + "_" + str(pair[1].distribution.name)
+for i in len(bidders):
+	pair = bidders[i]
+	graphname = str(0) + "_" + str(1) + "_" + str(i)
 	auction = VickreyAuction([pair[0], pair[1]])
 	(x,y,o) = runExperimentOnAuction(auction, 1, 5)
 	(mx, my) = findMaxReserve(x,y)
