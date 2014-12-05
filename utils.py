@@ -129,7 +129,7 @@ for d in dis:
 	bidders.append([bidder, bid2])
 
 #Now pair up and collect data
-for i in len(bidders):
+for i in xrange(len(bidders)):
 	pair = bidders[i]
 	graphname = str(0) + "_" + str(1) + "_" + str(i)
 	auction = VickreyAuction([pair[0], pair[1]])
