@@ -71,6 +71,8 @@ def getalphatwoDistribution():
 	class rv(scipy.stats.rv_continuous):
 		def _pdf(self, x):
 			return 1/(x*x*x)
+		def _cdf(self, x):
+			return 1-1/(2*x*x)
 	return rv(name='a2dist', a=1, b=float("inf"))
 
 
@@ -78,6 +80,8 @@ def getalphathreeDistribution():
 	class rv(scipy.stats.rv_continuous):
 		def _pdf(self, x):
 			return 1/(x*x*x*x)
+		def _cdf(self, x):
+			return 1-1/(3*x*x*x)
 	return rv(name='a3dist', a=1, b=float("inf"))
 
 
@@ -85,6 +89,8 @@ def getalphafourDistribution():
 	class rv(scipy.stats.rv_continuous):
 		def _pdf(self, x):
 			return 1/(x*x*x*x*x)
+		def _cdf(self, x):
+			return 1-1/(4*x*x*x*x)
 	return rv(name='a4dist', a=1, b=float("inf"))
 
 def save_data(name, x, y, mx, my, o, ratio):
@@ -116,10 +122,11 @@ dis = getRegularDistributions()
 #create all bidders
 bid1 = OneBidder()
 erd = getEqualRevenueDistribution()
-bidders = [[bid1, erd]]
-for d in dis
+bid2 = Bidder(erd, 0, 100)
+bidders = [[bid1, bid2]]
+for d in dis:
 	bidder = Bidder(d, 0, 100)
-	bidders.append([bidder, erd])
+	bidders.append([bidder, bid2])
 
 #Now pair up and collect data
 for pair in bidders:
