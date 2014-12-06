@@ -1,6 +1,7 @@
 import numpy as np
 from math import *
-from scipy.optimize import brentq, fsolve 
+from scipy.optimize import brentq, fsolve
+import scipy.stats 
 
 class VickreyAuction:
 
@@ -41,6 +42,8 @@ class VickreyAuction:
 				probOfMeetingReserve = 1 - self.bidders[i].distribution.cdf(self.bidders[i].optimalReserve)	
 				if (probOfMeetingReserve < minProbOfMeetingReserve):
 					minProbOfMeetingReserve = probOfMeetingReserve
+		if(minProbOfMeetingReserve == 0):
+			return 10000
 		return min(1000 * int(pow(1/minProbOfMeetingReserve, 2)), 10000)
 
 	def runXAuctions(self):
@@ -125,6 +128,8 @@ class VickreyAuction:
 class OneBidder:
 	def __init__(self):
 		self.randomSamples = None
+		self.distribution = scipy.stats.uniform() #fake
+		self.distribution.name = "OneBidder"
 		self.optimalReserve = 1
 
 	def isEVD(self):
