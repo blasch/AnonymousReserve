@@ -1,0 +1,82 @@
+\documentclass{acm_proc_article-sp}
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{wasysym}
+
+
+\begin{document}
+
+\title{Anonymous Reserve Auction Revenue Bounds \\
+{\normalsize Code available at: \url{https://github.com/blasch/AnonymousReserve}}} 
+\subtitle{}
+
+\numberofauthors{2} 
+\author{
+% 1st. author
+\alignauthor 
+Robert Schneidman \\
+	\affaddr{260476707}
+% 2nd. author
+\alignauthor Benjamin La Schiazza\\
+	\affaddr{260531181}
+% 3rd. author
+}
+
+\date{Nov30}
+
+\maketitle
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+Auction theory is an incredibly relevant field to investigate as it has many modern applications. Society has been running auctions for centuries yet only now with advances in computing technology and mathematics have they been explored in an academic setting. A number of fundamental results have emerged from applying mathematical models to these settings. While some results are incredibly practical and have shaped business models, others remain inapplicable due to their inherent assumptions. 
+
+One of these assumptions involves the nature of the distributions bidders choose they value for an object from. A very common practice is to assume all bidders pick values from the same distribution. In modern auctions settings found especially on the internet, bidders can come from a range of cultures and demographics and makes the applicability of theory stemming from these results not practical. Another standard found in the basic auction revenue theory (eg. Myerson's Lemma[1]) is that to achieve optimal revenue, bidders must be assigned bidder specific reserves[2]. While this may be feasible when all bidders have identical distributions (meaning their reserves turn out to be the same), in realistic settings with multiple distributions, it is hard to justify to real bidders that certain participants have a lower or higher reserve to meet to be eligible in the auction. In the name of fairness, though to the determinant of obtaining optimal revenue, real auctions (eg. Ebay) employ a general reserve for all participants. Some general bounds have been noted regarding the approximation of optimal revenue with anonymous reserves but they are not tight[3]. 
+
+Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.18)[3]. The simplest setting we can do our investigation under is an auction with one item and two bidders.
+
+\section{Theory}
+Our ultimate goal is to make statements about the nature of the revenue one can expect when running an auction with anonymous reserve. It is appropriate however to lay some foundation before discussion the problem at hand.
+
+\subsection{Vickrey Auction}
+A Vickrey auction is an auction where the winner is the bidder with the highest bid but only pays the second highest price once he wins. This auction has a number of desirable properties including incentives for truthful bidding and maximization of general social welfare. [7] It is the mechanism of choice for optimizing revenue. 
+
+\subsection{Virtual Value}
+Myerson showed in 1981 that in a single dimensional setting, given a set of distributions Fi for each bidder, the expected revenue from a DSIC [5] mechanism is 
+\[ E[\sum_{i} p_{i}(v)] = E[\sum_{i} x_{i}(v)\phi_{i}(v_{i})] \] \\
+where for bidder i and his distribution F,
+\[ \phi(v) = v - \frac{1-F(v)}{f(v)}\] \\
+Which is bidder i's \emph{virtual value} function. Therefore to optimize revenue the mechanism (read: auction) chosen should maximize each bidders virtual value function! The optimal auction to maximize revenue is therefore a Vickrey auction with a bidder specific reserve [6] \[ r = \phi^{-1}(0)\]. This mechanism is chosen because it optimizes social welfare (in this case virtual welfare) and thus obtains optimal revenue. It will provide a benchmark for the performance of mechanisms with anonymous reserves.
+
+\subsection{Regular Distributions}
+Another point to look at is the nature of the distributions bidders can bid from. While realistically there can be a wide range of distributions for bidders that my not align well with idealized functions, it is safe to focus on a set of distributions with nice properties. The distributions we will explore are called Regular distributions and are defined as functions whose virtual value functions are non-decreasing. When all bidder's distributions are regular, the mechanism maximizing virtual welfare is monotone. [WHY IMPORTANT??]
+
+Common distributions in this class include the normal distribution, exponential distribution and uniform distribution. Some equally interesting distributions are "fat-tailed" distributions, defined as having a probability distribution \\
+\[  f(x) \sim x^{-(1 + \alpha)} \: as \: x \rightarrow \infty ,\: \alpha > 0 \] \\
+Since we are looking to show a worst-case bound on the revenue in an arbitrary anonymous reserve auction with regular bidders, we want to investigate the "least regular" function in this class, the equal-revenue distribution [8]. It's probability distribution is an instance of a fat-tailed distribution and is as follows, \\
+\[  f(x) = \frac{1}{x^2} \] \\
+It lies on the boundary of regularity as it's virtual value function is flat.
+
+\subsection{Anonymous Reserve Approximation of Optimal Revenue}
+As discussed, to get the optimal revenue in a two bidder-one item auction one needs to assign a bidder specific reserve. In an idealized setting this is perfectly acceptable but certainly not justifiable in practice. Anonymous reserves are a means to keep the auction process fair for all bidders. But how does the expected revenue change compare to the optimal revenue had we foregone fairness? Is there a way to set the anonymous reserve to maximize revenue and in the worst case what are the approximations for the optimal revenue?
+
+In Hartline's book draft [3], Lemma 4.18 and 4.19 state that in the worst case, given arbitrary regular distributions, an anonymous reserve auction will yield between 25\% and 50\% of the optimal revenue. Without detailing the proofs themselves, in the case of Lemma 4.18 (the upper bound), Hartline makes use of the equal-revenue distribution as detailed above because it is on the border of regularity. 
+
+Beyond Hartline's exploration of the topic, there does not seem to be any other research into the revenue bounds of anonymous reserves despite it's relevance to many business models in various spaces.
+
+\section{Methodology}
+
+\section{Results}
+
+\section{Discussion}
+
+\end{document}
