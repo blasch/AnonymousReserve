@@ -96,7 +96,7 @@ class VickreyAuction:
 				bidders = []
 				virtualBids = []
 				for bidderIndex in range(0, len(possibleWinningBids)):
-					if (i != -1):
+					if (possibleWinningBids[bidderIndex] != -1):
 						bidders.append(bidderIndex)
 						virtualBids.append(self.bidders[bidderIndex].phi(possibleWinningBids[bidderIndex]))
 				maxVirtualBid = max(virtualBids)
