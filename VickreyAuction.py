@@ -32,6 +32,8 @@ class VickreyAuction:
 				probOfMeetingReserve = 1 - self.bidders[i].distribution.cdf(self.anonymousReserve)
 				if (probOfMeetingReserve < minProbOfMeetingReserve):
 					minProbOfMeetingReserve = probOfMeetingReserve
+		if(int(minProbOfMeetingReserve) == 0):
+			return 10000
 		return min(1000 * int(pow(1/minProbOfMeetingReserve, 2)), 10000)
 
 
@@ -42,7 +44,7 @@ class VickreyAuction:
 				probOfMeetingReserve = 1 - self.bidders[i].distribution.cdf(self.bidders[i].optimalReserve)	
 				if (probOfMeetingReserve < minProbOfMeetingReserve):
 					minProbOfMeetingReserve = probOfMeetingReserve
-		if(minProbOfMeetingReserve == 0):
+		if(int(minProbOfMeetingReserve) == 0):
 			return 10000
 		return min(1000 * int(pow(1/minProbOfMeetingReserve, 2)), 10000)
 
