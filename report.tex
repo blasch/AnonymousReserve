@@ -42,9 +42,9 @@ Robert Schneidman \\
 \section{Introduction}
 Auction theory is an incredibly relevant field to investigate as it has many modern applications. Society has been running auctions for centuries yet only now with advances in computing technology and mathematics have they been explored in an academic setting. A number of fundamental results have emerged from applying mathematical models to these settings. While some results are incredibly practical and have shaped business models, others remain inapplicable due to their inherent assumptions. 
 
-One of these assumptions involves the nature of the distributions bidders choose they value for an object from. A very common practice is to assume all bidders pick values from the same distribution. In modern auctions settings found especially on the internet, bidders can come from a range of cultures and demographics and makes the applicability of theory stemming from these results not practical. Another standard found in the basic auction revenue theory (eg. Myerson's Lemma[1]) is that to achieve optimal revenue, bidders must be assigned bidder specific reserves[2]. While this may be feasible when all bidders have identical distributions (meaning their reserves turn out to be the same), in realistic settings with multiple distributions, it is hard to justify to real bidders that certain participants have a lower or higher reserve to meet to be eligible in the auction. In the name of fairness, though to the determinant of obtaining optimal revenue, real auctions (eg. Ebay) employ a general reserve for all participants. Some general bounds have been noted regarding the approximation of optimal revenue with anonymous reserves but they are not tight[3]. 
+One of these assumptions involves the nature of the distributions bidders choose they value for an object from. A very common practice is to assume all bidders pick values from the same distribution. In modern auctions settings found especially on the internet, bidders can come from a range of cultures and demographics and makes the applicability of theory stemming from these results not practical. Another fact in the basic auction revenue theory (eg. Myerson's Lemma[1]) is that to achieve optimal revenue, bidders must be assigned bidder specific reserves[2]. While this may be feasible when all bidders have identical distributions (meaning their reserves turn out to be the same), in realistic settings with multiple distributions, it is hard to justify to real bidders that certain participants have a lower or higher reserve to meet to be eligible in the auction. In the name of fairness, though to the determinant of obtaining optimal revenue, real auctions (eg. Ebay) employ a general reserve for all participants. Some general bounds have been noted regarding the approximation of optimal revenue with anonymous reserves but they are not tight\cite[p. 126]{hartline}. 
 
-Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.18)[3]. If a setting can be found under which the max revenue for anonymous reserve is significantly under 50\% then the possibility of formally improving the bound is there. The simplest setting we can do our investigation under is an auction with one item and two bidders.
+Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.17)\cite{hartline}. If a setting can be found under which the max revenue for anonymous reserve is significantly under 50\% then the possibility of formally improving the bound is there. The simplest setting we can do our investigation under is an auction with one item and two bidders.
 
 \section{Theory}
 Our ultimate goal is to make statements about the nature of the revenue one can expect when running an auction with anonymous reserve. It is appropriate however to lay some foundation before discussion the problem at hand.
@@ -71,7 +71,7 @@ It lies on the boundary of regularity as it's virtual value function is flat.
 \subsection{Anonymous Reserve Approximation of Optimal Revenue}
 As discussed, to get the optimal revenue in a two bidder-one item auction one needs to assign a bidder specific reserve. In an idealized setting this is perfectly acceptable but certainly not justifiable in practice. Anonymous reserves are a means to keep the auction process fair for all bidders. But how does the expected revenue change compare to the optimal revenue had we foregone fairness? Is there a way to set the anonymous reserve to maximize revenue and in the worst case what are the approximations for the optimal revenue?
 
-In Hartline's book draft [3], Lemma 4.18 and 4.19 state that in the worst case, given arbitrary regular distributions, an anonymous reserve auction will yield between 25\% and 50\% of the optimal revenue. Without detailing the proofs themselves, in the case of Lemma 4.18 (the upper bound), Hartline makes use of the equal-revenue distribution as detailed above because it is on the border of regularity. 
+In Hartline's book draft \cite{hartline}, Lemma 4.18 and Theorem 4.19 state that in the worst case, given arbitrary regular distributions, an anonymous reserve auction will yield between 25\% and 50\% of the optimal revenue. Without detailing the proofs themselves, in the case of Lemma 4.18 (the upper bound), Hartline makes use of the equal-revenue distribution as detailed above because it is on the border of regularity. 
 
 Beyond Hartline's exploration of the topic, there does not seem to be any other research into the revenue bounds of anonymous reserves despite it's relevance to many business models in various spaces.
 
@@ -96,7 +96,7 @@ The results of our experimentation were in general not very surprising. The rati
 
 \subsection{Hartline's Proof}
 
-As stated earlier, our first challenge was validating Hartline's theoretical argument that he used in the proof of the upper bound. The setting is a two bidder auction with one bidder with an underlying ERD and the other always bidding 1. Figure \ref{fig:proofgraph} shows the result of a Vickrey auction with many anonymous reserves. Accounting for experimental error, the results are as stated in the formal proof, the expected revenue hovers around 1 (max of 1.06 used for ratio).
+As stated earlier, our first challenge was validating Hartline's theoretical argument that he used in the proof of the upper bound \cite[p. 126]{hartline}. The setting is a two bidder auction with one bidder with an underlying ERD and the other always bidding 1. Figure \ref{fig:proofgraph} shows the result of a Vickrey auction with many anonymous reserves. Accounting for experimental error, the results are as stated in the formal proof, the expected revenue hovers around 1 (max of 1.06 used for ratio).
 
  	\begin{figure}[!htbp]
    		\centering
@@ -105,7 +105,7 @@ As stated earlier, our first challenge was validating Hartline's theoretical arg
     		\label{fig:proofgraph}
 	\end{figure}
 	
-The optimal revenue calculated in the experiment was 2.0197 (very much in line with the theoretical 2 shown in the paper[ref]). The ratio is evidently ~0.52. Many runs shows that the ratio does indeed hover around 0.5, confirming the proof of the upper bound given in Hartline's book.
+The optimal revenue calculated in the experiment was 2.0197 (very much in line with the theoretical 2 shown in the paper \cite{hartline}). The ratio is evidently ~0.52. Many runs shows that the ratio does indeed hover around 0.5, confirming the proof of the upper bound given in Hartline's book.
 
 \subsection{Did we do better?}
 
@@ -118,13 +118,16 @@ Unfortunately this was the closest any of our simulated auctions got to the uppe
     		\label{fig:erd2}
 	\end{figure}
 
-While no results involving the ERD came close to giving us opportunities to improve the upper bound, we went ahead and explored other pairs of bidders (Not involving ERD) with regular distributions. These bidders had more natural distributions, at least mathematically more prevalent distributions.
-
 \section{Discussion}
+
+The results were clearly not very groundbreaking. The theoretical proof was re-implemented successfully and a large number of similar auctions involving a range of regular distributions were run. All the other results had approximations of the optimal revenue hovering around 100\%.
 
 \section{Conclusion}
 
 \begin{thebibliography}{9}
+
+	\bibitem{hartline}
+		"4 Bayesian Approximation." Mechanism Design and Approximation. N.p.: n.p., n.d. N. pag. Jason Hartline. N/A. Web. 6 Dec. 2014. <http://jasonhartline.com/MDnA/MDnA-ch1to6.pdf>.
 
 \end{thebibliography}
 
