@@ -10,6 +10,8 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usepackage{wasysym}
+\setlength{\parindent}{1cm}
+\usepackage{indentfirst}
 
 
 \begin{document}
@@ -42,12 +44,12 @@ Auction theory is an incredibly relevant field to investigate as it has many mod
 
 One of these assumptions involves the nature of the distributions bidders choose they value for an object from. A very common practice is to assume all bidders pick values from the same distribution. In modern auctions settings found especially on the internet, bidders can come from a range of cultures and demographics and makes the applicability of theory stemming from these results not practical. Another standard found in the basic auction revenue theory (eg. Myerson's Lemma[1]) is that to achieve optimal revenue, bidders must be assigned bidder specific reserves[2]. While this may be feasible when all bidders have identical distributions (meaning their reserves turn out to be the same), in realistic settings with multiple distributions, it is hard to justify to real bidders that certain participants have a lower or higher reserve to meet to be eligible in the auction. In the name of fairness, though to the determinant of obtaining optimal revenue, real auctions (eg. Ebay) employ a general reserve for all participants. Some general bounds have been noted regarding the approximation of optimal revenue with anonymous reserves but they are not tight[3]. 
 
-Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.18)[3]. The simplest setting we can do our investigation under is an auction with one item and two bidders.
+Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.18)[3]. If a setting can be found under which the max revenue for anonymous reserve is significantly under 50\% then the possibility of formally improving the bound is there. The simplest setting we can do our investigation under is an auction with one item and two bidders.
 
 \section{Theory}
 Our ultimate goal is to make statements about the nature of the revenue one can expect when running an auction with anonymous reserve. It is appropriate however to lay some foundation before discussion the problem at hand.
 
-\subsection{Vickrey Auction}
+\subsection{Vickrey Auction with Anonymous Reserve}
 A Vickrey auction is an auction where the winner is the bidder with the highest bid but only pays the second highest price once he wins. This auction has a number of desirable properties including incentives for truthful bidding and maximization of general social welfare. [7] It is the mechanism of choice for optimizing revenue. 
 
 \subsection{Virtual Value}
@@ -74,6 +76,15 @@ In Hartline's book draft [3], Lemma 4.18 and 4.19 state that in the worst case, 
 Beyond Hartline's exploration of the topic, there does not seem to be any other research into the revenue bounds of anonymous reserves despite it's relevance to many business models in various spaces.
 
 \section{Methodology}
+Our approach to explore this topic was by simulation. By setting up an auction between various types of bidders, calculating the expected revenue under anonymous reserves and the optimal revenue, we can search for situations were the ratio of anonymous reserve revenue to optimal revenue is under 50\%.
+
+\subsection{Bidder Distributions}
+The pool of bidders used to set up auctions was populated with bidders with the following underlying regular distributions for their values: uniform, exponential, gamma, normal, equal revenue distribution (ERD), fat-tailed distributions with alpha equal to two, three and four and finally a bidder that always bids 1.
+
+\subsection{Experimental Set-up}
+The space of auctions investigated were that of one item with two bidders. To begin, Hartline’s proof of a 50\% approximation was the most appropriate place to start (bidder that always bids 1 and an ERD bidder) After that we pair up each distribution from our pool with a bidder bidding with the ERD. Since the ERD is borderline regular, intuitively the most sub-optimal cases will be found along this boundary. Inspired by the direction the formal proof took involving one of these bidders, we took the same approach.
+
+\subsection{Setting Bidder Specific Optimal Reserves}Initially, the process of finding the  bidder specific reserve was done by an exhaustive search method. All values x where 0 < cdf(x) < 1 were tested in order to maximize the single item single bidder posted price revenue. The calculation was done this way because many distributions do not have a closed form solution for finding phi^-1(0). Eventually, the process of setting a bidder specific reserve was done using a library function which was able to solve for phi^-1(0). This change allowed us to reduce the error when calculating the optimal revenue since the search increments were not infinitesimally small.\subsection{Setting Anonymous Reserves}	Due to the large number of iterations of each auctions that were run, sacrifices had to be made in terms of discretization of candidate reserves. The intervals between anonymous reserves that were tested was proportional to the range of bidder valuations. This was the most logical portion of the program to sacrifice precision. In most cases, a sub-optimal anonymous reserve exceeded the 50\% approximation (with error accounted for). In the case where the 50\% approximation was not met, the auction was tested a subsequent time with smaller intervals used to pinpoint the anonymous reserve.  \subsection{Running Auctions}After the reserve price was set, each auction was run proportional to the minimum probability of each bidder bidding above the reserve price (will be easier to understand when formula is written). A factor of 1000 was applied to reduce the error. No auction was run more then 10,000 times due to run time constraints. Under these conditions, a conservative error approximation of 10\% by comparing the experimental revenues with the theoretical expected revenue.  Under this 10\% error for both the optimal and anonymous reserve auctions, all auctions that approximated the optimal revenue less then 66.66\% were considered for re-testing.
 
 \section{Results}
 
