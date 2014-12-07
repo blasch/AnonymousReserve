@@ -121,11 +121,11 @@ dis = getRegularDistributions()
 #create all bidders
 bid1 = OneBidder()
 erd = getEqualRevenueDistribution()
-bid2 = Bidder(erd, 0.1, 100)
+bid2 = Bidder(erd, 0, 100)
 bidders = [[bid1, bid2]]
 for d in dis:
 	print len(bidders)
-	bidder = Bidder(d, 0.1, 100)
+	bidder = Bidder(d, 0, 100)
 	bidders.append([bidder, bid2])
 
 #Now pair up and collect data
@@ -143,5 +143,5 @@ for i in xrange(len(bidders)):
 	ratio = str(my/o)
 	graphData(graphname, x, y)
 	save_data(graphname, x, y, mx, my, o, ratio)
->>>>>>> 7766e499e8eb80a567ca3b11392ef0e4a1204b53
+
 	
