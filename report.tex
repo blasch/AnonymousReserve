@@ -47,17 +47,18 @@ One of these assumptions involves the nature of the distributions bidders choose
 Due to the prevalence of Anonymous reserve auctions it is important to understand what kind of performance can be expected from their utilization. Our goal with this project was to explore and try and improve guarantees made on the optimal revenue approximations. More specifically, we aim to improve the upper bound proposed by Hartline (Lemma 4.17)\cite{hartline}. If a setting can be found under which the max revenue for anonymous reserve is significantly under 50\% then the possibility of formally improving the bound is there. The simplest setting we can do our investigation under is an auction with one item and two bidders.
 
 \section{Theory}
-Our ultimate goal is to make statements about the nature of the revenue one can expect when running an auction with anonymous reserve. It is appropriate however to lay some foundation before discussion the problem at hand.
+Our ultimate goal is to make statements about the nature of the revenue one can expect when running a single-item Vickrey auction with an anonymous reserve. The bayesian optimal auction is used as a benchmark. It is appropriate however to lay some foundation before discussion the problem at hand.
 
-\subsection{Vickrey Auction with Anonymous Reserve}
+\subsection{Dominant Strategy Incentive Compatible}An auction is Dominant Strategy Incentive Compatible (DSIC) if bidding truthfully is the single strategy that will maximizes a bidder’s utility. If an auction is DSIC, bidding truthfully will never result in a bidder having a negative utility function.
+
+\subsection{Virtual Value}Myerson showed in 1981 that in a single dimensional setting, given a set of distributions Fi for each bidder, the expected revenue from a DSIC [5] mechanism is \[ E[\sum_{i} p_{i}(v)] = E[\sum_{i} x_{i}(v)\phi_{i}(v_{i})] \] \\where for bidder i and his distribution F,\[ \phi(v) = v - \frac{1-F(v)}{f(v)}\] \\$phi_{i}(v)$ is bidder i's \emph{virtual value} function. In order to optimize revenue, a mechanism should allocate goods according to the virtual value function.
+
+\subsection{Vickrey Auction}
 A Vickrey auction is an auction where the winner is the bidder with the highest bid but only pays the second highest price once he wins. This auction has a number of desirable properties including incentives for truthful bidding and maximization of general social welfare. [7] It is the mechanism of choice for optimizing revenue. 
 
-\subsection{Virtual Value}
-Myerson showed in 1981 that in a single dimensional setting, given a set of distributions Fi for each bidder, the expected revenue from a DSIC [5] mechanism is 
-\[ E[\sum_{i} p_{i}(v)] = E[\sum_{i} x_{i}(v)\phi_{i}(v_{i})] \] \\
-where for bidder i and his distribution F,
-\[ \phi(v) = v - \frac{1-F(v)}{f(v)}\] \\
-Which is bidder i's \emph{virtual value} function. Therefore to optimize revenue the mechanism (read: auction) chosen should maximize each bidders virtual value function! The optimal auction to maximize revenue is therefore a Vickrey auction with a bidder specific reserve [6] \[ r = \phi^{-1}(0)\]. This mechanism is chosen because it optimizes social welfare (in this case virtual welfare) and thus obtains optimal revenue. It will provide a benchmark for the performance of mechanisms with anonymous reserves.
+\subsection{Single-Item Vickrey Auction with Anonymous Reserve}A single-item Vickrey auction with anonymous reserve is an auction where the winner is the bidder with the highest bid under the condition that he meets his reserve. He pays the maximum of his reserve price and the second highest bid. This auction is dominant strategy incentive compatible.
+
+\subsection{Single-Item Bayesian Optimal Auction}The single-item Bayesian optimal auction is an auction where the winner is the bidder with the highest virtual value under the condition that he meets his reserve.  The bidder specific reserve price is set at \[ r = \phi_{i}^{-1}(0)\] for each bidder i in order to maximize virtual welfare (that in turn maximizes expected revenue). The winning bidder pays the maximum price he would need to bid in order to no longer win the auction. This auction is dominant strategy incentive compatible. [7] It is the mechanism of choice for optimizing revenue. 
 
 \subsection{Regular Distributions}
 Another point to look at is the nature of the distributions bidders can bid from. While realistically there can be a wide range of distributions for bidders that my not align well with idealized functions, it is safe to focus on a set of distributions with nice properties. The distributions we will explore are called Regular distributions and are defined as functions whose virtual value functions are non-decreasing. When all bidder's distributions are regular, the mechanism maximizing virtual welfare is monotone. [WHY IMPORTANT??]
