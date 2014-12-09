@@ -52,11 +52,15 @@ def runExperimentOnAuction(auction, min, max):
 	x_reserve = []
 	y_revenue = []
 	opt_revenue = auction.runXOptimalAuctions()
+	if(int(opt_revenue) == 0):
+		return ("skip", "", "")
 	for r in reservesToExplore:
 		auction.setAnonymousReserve(r)
 		profit = auction.runXAuctions()
 		x_reserve.append(r)
 		y_revenue.append(profit)
+		if(int(opt_revenue) != 0 and float(profit)/opt_revenue > 0.66):
+			return (x_reserve, y_revenue, opt_revenue)
 	return (x_reserve, y_revenue, opt_revenue)
 
 def getEqualRevenueDistribution():
@@ -72,7 +76,7 @@ def getalphatwoDistribution():
 		def _pdf(self, x):
 			return 1/(x*x*x)
 		def _cdf(self, x):
-			return 1-1/(2*x*x)
+			return 1-1/(2*x*x)	
 	return rv(name='a2dist', a=1, b=float("inf"))
 
 
@@ -103,40 +107,90 @@ def save_data(name, x, y, mx, my, o, ratio):
 		for i in xrange(len(x)):
 			a.writerow([x[i], y[i]])
 
+def getUniformDistributions():
+	dis = []
+	dis.append(scipy.stats.uniform(loc=0, scale=1))
+	dis.append(scipy.stats.uniform(loc=1, scale=2))
+	dis.append(scipy.stats.uniform(loc=1, scale=4))
+	dis.append(scipy.stats.uniform(loc=6, scale=10))
+	dis.append(scipy.stats.uniform(loc=2, scale=4))
+	dis.append(scipy.stats.uniform(loc=3, scale=7))
+	dis.append(scipy.stats.uniform(loc=10, scale=17))
+	dis.append(scipy.stats.uniform(loc=10, scale=100))
+	return dis
+
+def getNormalDistributions():
+	dis = []
+	dis.append(scipy.stats.norm(loc=0, scale=1))
+	dis.append(scipy.stats.norm(loc=10, scale=10))
+	dis.append(scipy.stats.norm(loc=3, scale=5))
+	dis.append(scipy.stats.norm(loc=5, scale=1))
+	dis.append(scipy.stats.norm(loc=7, scale=6))
+	dis.append(scipy.stats.norm(loc=50, scale=35))
+	return dis
+
+def getGammaDistributions():
+	dis = []
+	dis.append(scipy.stats.gamma(loc=0, scale=1))
+	dis.append(scipy.stats.gamma(loc=10, scale=10))
+	dis.append(scipy.stats.gamma(loc=3, scale=5))
+	dis.append(scipy.stats.gamma(loc=5, scale=1))
+	dis.append(scipy.stats.gamma(loc=7, scale=6))
+	dis.append(scipy.stats.gamma(loc=50, scale=35))
+	return dis
+
+def getExponDistributions():
+	dis = []
+	dis.append(scipy.stats.expon(loc=0, scale=1))
+	dis.append(scipy.stats.expon(loc=10, scale=10))
+	dis.append(scipy.stats.expon(loc=3, scale=5))
+	dis.append(scipy.stats.expon(loc=5, scale=1))
+	dis.append(scipy.stats.expon(loc=7, scale=6))
+	dis.append(scipy.stats.expon(loc=50, scale=35))
+	return dis
 
 def getRegularDistributions():
-	uni = scipy.stats.uniform()
-	norm = scipy.stats.norm()
-	gamma = scipy.stats.gamma(3., loc = 0., scale = 2.)
-	exp = scipy.stats.expon()
-	erd = getEqualRevenueDistribution()
+	dis = []
+	dis.extend(getUniformDistributions())
+	dis.extend(getNormalDistributions())
+	#dis.extend(getGammaDistributions())
+	dis.extend(getExponDistributions())
 	a2 = getalphatwoDistribution()
 	a3 = getalphathreeDistribution()
 	a4 = getalphafourDistribution()
-	# include some fat tail distributions (alpha varied)
-	return [uni, norm, gamma, exp, erd, a2, a3, a4]
+	dis.append(a2)
+	dis.append(a3)
+	dis.append(a4)
+	return dis
 
 dis = getRegularDistributions()
 
 #create all bidders
-bid1 = OneBidder()
-erd = getEqualRevenueDistribution()
-bid2 = Bidder(erd, 0, 100)
-bidders = [[bid1, bid2]]
-for d in dis:
-	print len(bidders)
-	bidder = Bidder(d, 0, 100)
-	bidders.append([bidder, bid2])
+#bid1 = OneBidder()
+#erd = getEqualRevenueDistribution()
+#bid2 = Bidder(erd, 0, 100)
+bidders = []
+for i in xrange(len(dis)):
+	for j in xrange(len(dis)):
+		if(j <= i):
+			continue
+		print len(bidders)
+		bidder = Bidder(dis[i], 0, 100)
+		bidder2 = Bidder(dis[j], 0, 100)
+		bidders.append([bidder, bidder2, i, j])
 
 #Now pair up and collect data
 for i in xrange(len(bidders)):
 	pair = bidders[i]
-	graphname = str(0) + "_" + str(1) + "_" + str(i)
+	graphname = str(pair[2]) + "_" + str(pair[3]) + "_" + str(i)
 	auction = VickreyAuction([pair[0], pair[1]])
-	(x,y,o) = runExperimentOnAuction(auction, 1, 5)
+	(x,y,o) = runExperimentOnAuction(auction, 0, 100)
+	if(x == "skip"):
+		continue
 	(mx, my) = findMaxReserve(x,y)
 	print graphname
 	print "optimal revenue: " + str(o)
+
 	print "best anonymous reserve: " + str(mx)
 	print "revenue under best anonymous reserve: " + str(my)
 	print "ratio of opt: " + str(my/o)
