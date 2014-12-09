@@ -121,22 +121,22 @@ def getUniformDistributions():
 
 def getNormalDistributions():
 	dis = []
-	dis.append(scipy.stats.norm(loc=0, scale=1))
-	dis.append(scipy.stats.norm(loc=10, scale=10))
-	dis.append(scipy.stats.norm(loc=3, scale=5))
+	dis.append(scipy.stats.norm(loc=10, scale=3))
+	dis.append(scipy.stats.norm(loc=25, scale=8))
+	dis.append(scipy.stats.norm(loc=3, scale=1))
 	dis.append(scipy.stats.norm(loc=5, scale=1))
-	dis.append(scipy.stats.norm(loc=7, scale=6))
-	dis.append(scipy.stats.norm(loc=50, scale=35))
+	dis.append(scipy.stats.norm(loc=17, scale=5))
+	dis.append(scipy.stats.norm(loc=50, scale=10))
 	return dis
 
 def getGammaDistributions():
 	dis = []
-	dis.append(scipy.stats.gamma(loc=0, scale=1))
-	dis.append(scipy.stats.gamma(loc=10, scale=10))
-	dis.append(scipy.stats.gamma(loc=3, scale=5))
-	dis.append(scipy.stats.gamma(loc=5, scale=1))
-	dis.append(scipy.stats.gamma(loc=7, scale=6))
-	dis.append(scipy.stats.gamma(loc=50, scale=35))
+	dis.append(scipy.stats.norm(loc=10, scale=3))
+	dis.append(scipy.stats.norm(loc=25, scale=8))
+	dis.append(scipy.stats.norm(loc=3, scale=1))
+	dis.append(scipy.stats.norm(loc=5, scale=1))
+	dis.append(scipy.stats.norm(loc=17, scale=5))
+	dis.append(scipy.stats.norm(loc=50, scale=10))
 	return dis
 
 def getExponDistributions():
@@ -188,13 +188,14 @@ for i in xrange(len(bidders)):
 	if(x == "skip"):
 		continue
 	(mx, my) = findMaxReserve(x,y)
-	print graphname
-	print "optimal revenue: " + str(o)
-
-	print "best anonymous reserve: " + str(mx)
-	print "revenue under best anonymous reserve: " + str(my)
-	print "ratio of opt: " + str(my/o)
-	ratio = str(my/o)
+	#print "optimal revenue: " + str(o)
+	if(my/o < 0.66):
+		print graphname
+		print "FOUND"
+	#print "best anonymous reserve: " + str(mx)
+	#print "revenue under best anonymous reserve: " + str(my)
+	#print "ratio of opt: " + str(my/o)
+	#ratio = str(my/o)
 	graphData(graphname, x, y)
 	save_data(graphname, x, y, mx, my, o, ratio)
 
