@@ -26,7 +26,7 @@ def graphData(graphname, x_reserves, y_revenue):
 	ax.set_xlabel('Anonymous Reserve Prices')
 	ax.set_ylabel('Expected Revenue')
 	plt.savefig('graphs/' + str(graphname) + '.pdf')
-	print "graph of " + str(graphname) + " saved at graphs/" + str(graphname) + ".pdf"
+	#print "graph of " + str(graphname) + " saved at graphs/" + str(graphname) + ".pdf"
 	
 def findMaxReserve(x_reserves, y_revenue):
 	max_revenue = max(y_revenue)
@@ -195,7 +195,7 @@ for i in xrange(len(bidders)):
 	#print "best anonymous reserve: " + str(mx)
 	#print "revenue under best anonymous reserve: " + str(my)
 	#print "ratio of opt: " + str(my/o)
-	#ratio = str(my/o)
+	ratio = str(my/o)
 	graphData(graphname, x, y)
 	save_data(graphname, x, y, mx, my, o, ratio)
 
